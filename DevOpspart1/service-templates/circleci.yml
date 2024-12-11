@@ -1,0 +1,40 @@
+version: 2.1
+
+executors:
+  default-executor:
+    docker:
+      - image: ""
+    environment:
+      SERVICE_NAME: "dev-ops course"
+      SERVICE_TYPE: "frontend"
+
+jobs:
+  pre-install:
+    executor: default-executor
+    steps:
+      
+
+  install:
+    executor: default-executor
+    steps:
+      - run:
+          name: "Install Step"
+          command: ""
+
+  post-install:
+    executor: default-executor
+    steps:
+      
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - pre-install
+      - install:
+          requires:
+            - pre-install
+      - post-install:
+          requires:
+            - install
+  

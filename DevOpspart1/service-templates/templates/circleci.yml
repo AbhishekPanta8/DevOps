@@ -1,0 +1,48 @@
+version: 2.1
+
+executors:
+  default-executor:
+    docker:
+      - image: "{{ DockerImage }}"
+    environment:
+      SERVICE_NAME: "{{ ServiceName }}"
+      SERVICE_TYPE: "{{ ServiceType }}"
+
+jobs:
+  pre-install:
+    executor: default-executor
+    steps:
+      {% for command in CircleCI.PreInstallCommands %}
+      - run:
+          name: "Pre-install Step - {{ loop.index }}"
+          command: "{{ command }}"
+      {% endfor %}
+
+  install:
+    executor: default-executor
+    steps:
+      - run:
+          name: "Install Step"
+          command: "{{ CircleCI.InstallCommands }}"
+
+  post-install:
+    executor: default-executor
+    steps:
+      {% for command in CircleCI.PostInstallCommands %}
+      - run:
+          name: "Post-install Step - {{ loop.index }}"
+          command: "{{ command }}"
+      {% endfor %}
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - pre-install
+      - install:
+          requires:
+            - pre-install
+      - post-install:
+          requires:
+            - install
+  
